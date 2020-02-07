@@ -1,0 +1,37 @@
+--teaser example
+restart
+needs "main.m2"
+setRandomSeed 0
+dom = domain(3, 1)
+Map = diffEuclideanSigMap dom
+H = witnessHomotopy(dom, Map)
+elapsedTime W = runMonodromy H
+
+R = QQ[x,y,z]
+f=homogenize(8*x^3 - (20*x)*y + 2*y^2 + 5*x - 10,z)
+W0 = witnessCollect(f,W)
+
+L0 = sub(matrix{{-100,60,-3}},CC) -- double check these!
+W0 = witnessCollect(f, W,SliceParameters=>L0,Verbose=>true)
+netList sort realPoints(dehomog \ preimage W0)
+netList sort realPoints(points image W0)
+
+L1 = L0 + transpose foldVert for i from 1 to 1 list (matrix 0_(CC^2)||matrix{{1_CC}})
+L2 = L0 + transpose(matrix 0_(CC^2)||matrix{{-1_CC}})
+
+W1 = witnessCollect(f, W0,SliceParameters=>L1)
+W2 = witnessCollect(f, W1,SliceParameters=>L2)
+imSums = {W0,W1,W2}/(w->sum(matrix \ points image w))
+r1=imSums#0-imSums#1
+r2=imSums#0-imSums#2
+realPoints points image W0
+netList realPoints(dehomog \ preimage W0)
+netList realPoints(apply(preimage W0, x-> point(evaluate(map H,point fixedParams W0,x))),Tolerance=>10000)
+netList realPoints(apply(preimage W0, x-> point(evaluate(map H,point fixedParams W0,x)|(matrix dehomog matrix x))),Tolerance=>10000)
+SVD(r1||r2) -- trace test is iffy
+imSumIngredients = {W0,W1,W2}/(w->apply(preimage w, x -> evaluate(map H,point fixedParams w,x)))
+imSumIngredients/first
+imSums = imSumIngredients/sum
+r1=imSums#0-imSums#1
+r2=imSums#0-imSums#2
+SVD(r1||r2) -- trace test seems to pass
