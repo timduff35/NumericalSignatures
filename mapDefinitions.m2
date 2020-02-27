@@ -24,10 +24,11 @@ diffEuclideanSigMap = dom -> (
 	)
     )
 
-jointDiffEuclideanSigMap = (d, domainGS) -> (
-    f1 := (gateMatrix domainGS)_(0,0);
-    f2 := (gateMatrix domainGS)_(2,0);
-    mapVars := vars domainGS;
+jointDiffEuclideanSigMap = dom -> (
+    domGS := gateSystem dom;
+    f1 := (gateMatrix domGS)_(0,0);
+    f2 := (gateMatrix domGS)_(2,0);
+    mapVars := vars domGS;
     X1 := mapVars_(0,0);
     Y1 := mapVars_(0,1);
     Z1 := mapVars_(0,2);
@@ -38,17 +39,23 @@ jointDiffEuclideanSigMap = (d, domainGS) -> (
     fx2 := compress diff(X2, f2);
     fy1 := compress diff(Y1, f1);
     fy2 := compress diff(Y2, f2);
-    n1 := compress (Y2-Y1)*fx1+(X1-X2)*fy1;
-    d1 := compress (X1-X2)*fx1+(Y1-Y2)*fy1;
-    n2 := compress (Y2-Y1)*fx2+(X1-X2)*fy2;
-    d2 := compress (X1-X2)*fx2+(Y1-Y2)*fy2;
-    F1 := (X1-X2)^2+(Y1-Y2)^2;
-    F2 := n1 / d1;
-    F3 := n2 / d2;
+    -- implicit derivatives up to sign
+    y1 := fx1 / fy1;
+    y2 := fx2 / fy2;
+    a := (X1*Z2-X2*Z1)/(Y2*Z1-Y1*Z2);
+-*
+    n1 := compress (Y2/Z2-Y1/Z1)*fx1+(X1/Z1-X2/Z2)*fy1;
+    d1 := compress (X1/Z1-X2/Z2)*fx1+(Y1/Z1-Y2/Z2)*fy1;
+    n2 := compress (Y2/Z2-Y1/Z1)*fx2+(X1/Z1-X2/Z2)*fy2;
+    d2 := compress (X1/Z1-X2/Z2)*fx2+(Y1/Z1-Y2/Z2)*fy2;
+*-
+    F1 := (X1/Z1-X2/Z2)^2+(Y1/Z1-Y2/Z2)^2;
+    F2 := (y1+a)/(a*y1-1);--n1 / d1;
+    F3 := (y2+a)/(a*y2-1); --n2 / d2;
     gateSystem(
-	parameters domainGS, 
+	parameters domGS, 
 	mapVars, 
-	transpose gateMatrix{{F1,F2,F3}})
+	transpose gateMatrix{{F1,F2^2,F3^2}})
     )
 
 jointEuclideanSigMap = dom -> (
