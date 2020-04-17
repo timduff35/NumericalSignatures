@@ -1,4 +1,3 @@
-png("../PIX/joint-standard-sensitivity.png")
 COLS <- c("orange","red","purple","blue","green")
 DEGS <- c(2,3,4,5)
 PCH <- 19
