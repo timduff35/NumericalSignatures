@@ -39,6 +39,10 @@ Output:
 *-
 
 equalityTest = method(Options=>{NearestWitnessPoint => false, Verbose=>false, SampleAttempts=>20})
+equalityTest (RingElement, WitnessData) := o -> (f, refW) -> (
+    C := extractCoeffs f;
+    equalityTest(C, refW, o)
+    )
 equalityTest (Matrix, WitnessData) := o -> (C, refW) -> (
     H := homotopy refW;
     sampleResult := timing sampleCurveWParams(C, H,SampleAttempts=>o.SampleAttempts);
@@ -54,6 +58,7 @@ equalityTest (Matrix, WitnessData) := o -> (C, refW) -> (
     theResult := if (length image imgPtRefWit == 0) then null else (
     	imgPtRef := first image imgPtRefWit;
 	lookingUp := timing if (o.NearestWitnessPoint) then minPosition((points image refW)/(x->norm(matrix x-matrix imgPtRef))) else position(imgPtRef, image refW);
+        << "^^^^ track time " << endl;
 	lookupTime := first lookingUp;
     	matchedIndex := last lookingUp;
     	testPositive := not instance(matchedIndex, Nothing);
@@ -65,6 +70,7 @@ equalityTest (Matrix, WitnessData) := o -> (C, refW) -> (
     	);
     testResult(imgPtRefWit, theResult, trackTime, lookupTime)
 )
+
 
 end--
 

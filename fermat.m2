@@ -1,11 +1,11 @@
 -- Example 4.1
 restart
 needs "main.m2"
-setRandomSeed 0
+setRandomSeed 2020
 dom = domain(4, 1);
 Map = diffEuclideanSigMap dom;
 H = witnessHomotopy(dom, Map);
-elapsedTime W = runMonodromy H -- typically 9 seconds
+elapsedTime W = runMonodromy H; -- typically 9 seconds
 
 R = QQ[x,y,z]
 f=x^4+y^4+z^4

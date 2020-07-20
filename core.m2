@@ -360,6 +360,8 @@ evaluate (WitnessHomotopy, Point, Point) := (H, p, x) -> evaluate(gateSystem H, 
 vars WitnessHomotopy := H -> vars gateSystem H
 parameters WitnessHomotopy := H -> parameters gateSystem H
 gateMatrix WitnessHomotopy := H -> gateMatrix gateSystem H
+display = method()
+display WitnessHomotopy := H -> netList flatten entries gateMatrix H
 
 sampleCurveWParams = method(Options=>{SampleAttempts=>1})
 sampleCurveWParams (Matrix, WitnessHomotopy) := o -> (C, H) -> (
@@ -559,3 +561,4 @@ result = method()
 result TestResult := tr -> tr#"Result"
 trackTime = tr -> tr#"TrackTime"
 lookupTime = tr -> tr#"LookupTime"
+net TestResult := tr -> tr#"Result"
