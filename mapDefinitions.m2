@@ -104,3 +104,32 @@ projectiveJointSigMap = dom -> (
 	    }
 	)
     )    
+
+diffEqAffineSigMap = dom -> (
+    domGS := gateSystem dom;
+    f := (gateMatrix domGS)_(0,0);
+    mapVars := vars domGS;
+    X := mapVars_(0,0);
+    Y := mapVars_(0,1);
+    Z := mapVars_(0,2);
+    y1 := - compress((compress diff(X, f))/(compress diff(Y,f)));
+    y2 := compress(compress(diff(X, y1)) + compress(compress(diff(Y, y1)) * y1));
+    y3 := compress(compress(diff(X, y2)) + compress(compress(diff(Y, y2)) * y1));
+    y4 := compress(compress(diff(X, y3)) + compress(compress(diff(Y, y3)) * y1));
+    y5 := compress(diff(X, y4) + diff(Y, y4) * y1);
+    T41 := 3*y4*y2;
+    T42 := 5*y3*y3;
+    T4 := T41 - T42;
+    T51 := 9*y5*y2*y2;
+    T52 := 45*y4*y3*y2;
+    T53 := 20*y3*y3*y3;
+    T5 := T51-T52+T53;
+    T2 := y2;
+    T2q := T2*T2*T2*T2;
+    subExp1 := Z^2/T2q;
+    gateSystem(
+	parameters domGS, 
+	mapVars, 
+	transpose gateMatrix{{subExp1^2 * T4^3, subExp1 * T5}}
+	)
+    )
