@@ -1,7 +1,7 @@
 restart
 setRandomSeed 0
 needs "main.m2"
-dom = domain(3, 1)
+dom = domain(4, 1)
 Map = diffEqAffineSigMap dom
 H = witnessHomotopy(dom, Map)
 
@@ -13,4 +13,5 @@ R = QQ[x,y,z]
 f=x^3+y^3+z^3
 --Should have Sig Deg = 178
 f=x^3*y+y^3*z+z^3*x
+setDefault(tStepMin=>1e-7)
 Wf = witnessCollect(f, W,Verbose=>true)
