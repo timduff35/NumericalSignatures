@@ -1,7 +1,7 @@
 restart
 needs "main.m2"
 setRandomSeed 0
-dom = domain(4, 1)
+dom = domain(3, 1)
 Map = diffEqAffineSigMap dom
 H = witnessHomotopy(dom, Map)
 --Generic deg d EqAff Sig degree is 24d^2-48d (72 for d=3, 192 for d=4)
