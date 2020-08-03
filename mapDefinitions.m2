@@ -20,7 +20,7 @@ diffEuclideanSigMap = dom -> (
     gateSystem(
 	parameters domGS, 
 	mapVars, 
-	transpose gateMatrix{{subExp1*T2sq, subExp2^2}}--Z^4*T3^2/T1^6}} -- toggle to get SE(2)
+	transpose gateMatrix{{subExp1*T2sq, subExp2^2}}
 	)
     )
 
@@ -131,5 +131,92 @@ diffEqAffineSigMap = dom -> (
 	parameters domGS, 
 	mapVars, 
 	transpose gateMatrix{{subExp1^2 * T4^3, subExp1 * T5}}
+	)
+    )
+
+diffSEuclideanSigMap = dom -> (
+    domGS := gateSystem dom;
+    f := (gateMatrix domGS)_(0,0);
+    mapVars := vars domGS;
+    X := mapVars_(0,0);
+    Y := mapVars_(0,1);
+    Z := mapVars_(0,2);
+    y1 := - compress((compress diff(X, f))/(compress diff(Y,f)));
+    y2 := compress(compress(diff(X, y1)) + compress(compress(diff(Y, y1)) * y1));
+    y3 := compress(diff(X, y2) + diff(Y, y2) * y1);
+    T1 := (1 + y1^2);
+    T2 := y2;
+    T2sq := T2*T2;
+    subExp1 := Z^2/T1^3;
+    T3 := y3 * T1 - 3 * y1 *T2sq;
+    subExp2 := subExp1 * T3;
+    gateSystem(
+	parameters domGS, 
+	mapVars, 
+	transpose gateMatrix{{subExp1*T2sq, subExp2}}
+	)
+    )
+
+diffSimilaritySigMap = dom -> (
+    domGS := gateSystem dom;
+    f := (gateMatrix domGS)_(0,0);
+    mapVars := vars domGS;
+    X := mapVars_(0,0);
+    Y := mapVars_(0,1);
+    Z := mapVars_(0,2);
+    y1 := - compress((compress diff(X, f))/(compress diff(Y,f)));
+    y2 := compress(compress(diff(X, y1)) + compress(compress(diff(Y, y1)) * y1));
+    y3 := compress(compress(diff(X, y2)) + compress(compress(diff(Y, y2)) * y1));
+    y4 := compress(diff(X, y3) + diff(Y, y3) * y1);
+    T1 := (1 + y1^2);
+    T2 := y2;
+    T2sq := T2*T2;
+    T2cu := T2sq*T2;
+    T3 := y3 * T1 - 3 * y1 *T2sq;
+    T91 := y4*T1*T1;
+    T92 := 5*y1*y2;
+    T93 := y3*T1+T3;
+    T9 := T91 - T92*T93;
+    gateSystem(
+	parameters domGS, 
+	mapVars, 
+	transpose gateMatrix{{(Z/(Z*T2sq)) * T3, (Z/(Z*T2cu)) * T9}}
+	)
+    )
+
+diffAffineSigMap = dom -> (
+    domGS := gateSystem dom;
+    f := (gateMatrix domGS)_(0,0);
+    mapVars := vars domGS;
+    X := mapVars_(0,0);
+    Y := mapVars_(0,1);
+    Z := mapVars_(0,2);
+    y1 := - compress((compress diff(X, f))/(compress diff(Y,f)));
+    y2 := compress(compress(diff(X, y1)) + compress(compress(diff(Y, y1)) * y1));
+    y3 := compress(compress(diff(X, y2)) + compress(compress(diff(Y, y2)) * y1));
+    y4 := compress(compress(diff(X, y3)) + compress(compress(diff(Y, y3)) * y1));
+    y5 := compress(compress(diff(X, y4)) + compress(compress(diff(Y, y4)) * y1));
+    y6 := compress(compress(diff(X, y5)) + compress(compress(diff(Y, y5)) * y1));
+    T41 := 3*y4*y2;
+    T42 := 5*y3*y3;
+    T4 := T41 - T42;
+    T51 := 9*y5*y2*y2;
+    T52 := 45*y4*y3*y2;
+    T53 := 40*y3*y3*y3;
+    T5 := T51-T52+T53;
+    T61 := 9*y6*y2*y2*y2;
+    T62 := 63*y5*y3*y2*y2;
+    T63 := 45*y4*y4*y2*y2;
+    T64 := 255*y4*y3*y3*y2;
+    T65 := 160*y3*y3*y3*y3;
+    T6 := T61-T62-T63+T64-T65;
+    T4sq := T4^2;
+    T4cu := T4sq*T4;
+    denom1 := Z/(Z*T4sq);
+    denom2 := Z/(Z*T4cu);
+    gateSystem(
+	parameters domGS, 
+	mapVars, 
+	transpose gateMatrix{{denom2 * (T5)^2, denom1 * T6}}
 	)
     )
