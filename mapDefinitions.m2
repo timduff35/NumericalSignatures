@@ -212,8 +212,9 @@ diffAffineSigMap = dom -> (
     T6 := T61-T62-T63+T64-T65;
     T4sq := T4^2;
     T4cu := T4sq*T4;
-    denom1 := Z/(Z*T4sq);
-    denom2 := Z/(Z*T4cu);
+    oneGate := inputGate 1;
+    denom1 := oneGate/T4sq;
+    denom2 := oneGate/T4cu;
     gateSystem(
 	parameters domGS, 
 	mapVars, 

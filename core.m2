@@ -443,7 +443,7 @@ witnessData (List, Matrix, WitnessHomotopy) := o -> (L, p, H) -> (
 	"ImageTolerance" => o.ImgTol,
 	"ImageWitnesses" => (
 	    img := clusterSolutions(
-		L/(x->point evaluate(map H, point p_{0..numParameters Map -1}, x)),
+		L/(x->point evaluate(map H, point p_{0..numParameters H#"Map" -1}, x)),
 		Tolerance => o.ImgTol
 		);
 	    P := pointArray {};
