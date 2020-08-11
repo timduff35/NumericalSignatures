@@ -4,6 +4,6 @@ This implementation is for the [Macaulay2](http://www2.macaulay2.com/Macaulay2/)
 
 Commented examples illustrating the basic functionality maybe found in "teaser.m2", "fermat.m2", "quadrifolium.m2". These can be run line by line or as scripts.
 
-As for the implementation, "main.m2" contains two main functions---witnessCollect and equalityTest. "core.m2" contains supporting functions plus runMonodromy, which currently must be used to initialize witnessCollect. 
+There are three main routines whose usage is illustrated in these example files---[witnessCollect](https://github.com/timduff35/NumericalSignatures/blob/master/main.m2#L17), equalityTest, and runMonodromy.
 
 Data for the figures in section 4 may be reproduced using the scipts in the experiment_scripts subdirectory. For each m2 file (eg "joint-3pan.m2"), simply start a m2 session in this directory and excecute the lines below the "end" statement. Each experiment takes 30-120 minutes. Each experiment is reproducible, so you should obtain the same data on false negatives that we report. Note however that timing data may differ. Summaries of this data and the last figure may be obtained via the provided R scripts.
