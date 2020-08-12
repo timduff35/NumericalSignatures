@@ -2,7 +2,7 @@ This is the primary source code repository for the paper [Numerical equality tes
 
 This implementation is for the [Macaulay2](http://www2.macaulay2.com/Macaulay2/) computer algebra system and is written in the top-language Macaulay2 language. We recommend the latest version 1.16, though 1.15 may also be fine. 
 
-Commented examples illustrating the basic functionality maybe found in "teaser.m2", "fermat.m2", "quadrifolium.m2". These can be run line by line or as scripts.
+Commented examples illustrating the basic functionality maybe found in [teaser.m2](https://github.com/timduff35/NumericalSignatures/blob/master/teaser.m2), [fermat.m2](https://github.com/timduff35/NumericalSignatures/blob/master/fermat.m2), [quadrifolium.m2](https://github.com/timduff35/NumericalSignatures/blob/master/quadrifolium.m2). These can be run line by line or as scripts.
 
 There are three main routines whose usage is illustrated in these example files---[witnessCollect](https://github.com/timduff35/NumericalSignatures/blob/master/main.m2#L11), [equalityTest](https://github.com/timduff35/NumericalSignatures/blob/master/main.m2#L41), and [runMonodromy](https://github.com/timduff35/NumericalSignatures/blob/master/core.m2#L486).
 
