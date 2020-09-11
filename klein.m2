@@ -18,7 +18,7 @@ runWitnessExample (RingElement, HashTable) := o -> (f, CONFIG) -> (
     setDefault(tStepMin => CONFIG.tStepMin);
     setDefault(CorrectorTolerance => CONFIG.CorrectorTolerance);
     setDefault(maxCorrSteps => CONFIG.maxCorrSteps);
-    recursionLimit := CONFIG.recursionLimit;
+    recursionLimit = CONFIG.recursionLimit;
     d := CONFIG.Degree;
     assert(first degree f == d);
     G := CONFIG.Group;
@@ -38,17 +38,17 @@ restart
 needs "klein.m2"    
 
 R = QQ[x,y,z]
-f=x^3+y^3+z^3
---f=x^3*y+y^3*z+z^3*x
+--f=x^3+y^3+z^3
+f=x^3*y+y^3*z+z^3*x
 
 CONFIG = new HashTable from {
     Group => "A2",
     Degree => first degree f,
     Seed => 0,
-    tStepMin => 1e-7,
+    tStepMin => 1e-8,
     maxCorrSteps => 2,
     RL => 500, -- recursion limit
-    CorrectorTolerance => 1e-6
+    CorrectorTolerance => 1e-7
     }
 
 runWitnessExample(f, CONFIG)
