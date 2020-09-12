@@ -8,7 +8,8 @@ using StatsBase
 # Klein's quartic has the maximum # of automorphisms (168) of any genus-3 curve
 f = x^3*y+y^3*z+z^3*x
 
-# which we now compute
+# 168 is also the degree of the affine signature curve associated to f
+# which we now compute a (pseudo)witness set for
 y1 = - differentiate(f,x) / differentiate(f,y)
 y2 = differentiate(y1,x) + differentiate(y1,y) * y1
 y3 = differentiate(y2,x) + differentiate(y2,y) * y1
@@ -38,7 +39,6 @@ F=System([z-u[4],f,u[1] * denom2 * (T5)^2 + u[2] * denom1 * T6 + u[3]],parameter
 S=fixed(F,compile=true)
 
 N=10
-seeds = [1:N]
 nsols = Array{Int64}(undef,N)
 for i = 1:N
     Random.seed!(i);
@@ -48,3 +48,4 @@ end
 show(countmap(nsols))
 # (133 => 1,168 => 6,154 => 2,2 => 1)
 # Galois group is imprimitive, so it's natural that monodromy is sometimes stuck on lower root count
+# can probably make calculation more robust w/ more parameters
