@@ -29,7 +29,7 @@ runWitnessExample (RingElement, HashTable) := o -> (f, CONFIG) -> (
     H := witnessHomotopy(dom, Map);
     elapsedTime W := runMonodromy(H,Verbose=>o.Verbose);
 --    if o.Verbose then print length W.
-    Wf := witnessCollect(f, W,Verbose=>o.Verbose);
+    elapsedTime Wf := witnessCollect(f, W,Verbose=>o.Verbose);
     if o.Verbose then print Wf;
     (W, Wf)
     )
@@ -45,10 +45,10 @@ CONFIG = new HashTable from {
     Group => "A2",
     Degree => first degree f,
     Seed => 0,
-    tStepMin => 1e-8,
-    maxCorrSteps => 2,
+    tStepMin => 1e-6,
+    maxCorrSteps => 3,
     RL => 500, -- recursion limit
-    CorrectorTolerance => 1e-7
+    CorrectorTolerance => 1e-6
     }
 
 runWitnessExample(f, CONFIG)
