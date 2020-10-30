@@ -9,6 +9,7 @@ Organization:
 --2) manipulating points, parameters, and matrices
 --3) methods for random sampling
 --4) main classes
+--5) overrides (code behaves differently between M2 versions
 
 classes to consider adding: WitnessHomotopy, WitnessData (whats actually used in the equality test), WitnessPreImageData (needed for anything else), SlicePattern (shared by all of the previous)
 *- 
@@ -562,3 +563,49 @@ result TestResult := tr -> tr#"Result"
 trackTime = tr -> tr#"TrackTime"
 lookupTime = tr -> tr#"LookupTime"
 net TestResult := tr -> tr#"Result"
+
+
+--5) overrides
+evaluate (GateSystem,Matrix,Matrix) := (F,p,x) -> (
+    if numrows x =!= 1 or numrows p != 1 then "expected a 1-row matrix of values";
+    if numVariables F =!= numcols x then error "wrong number of variables values";
+    if numParameters F =!= numcols p then error "wrong number of parameter values";
+    evaluate(F#"SLP", matrix p | matrix x)
+    )
+
+--6) articleg
+stringFloatList = l -> (
+    n := length l;
+    i := 0;
+    l0 := first l;
+    l1 := last l;
+    out := "";
+    out = out | "$" | toString(realPart l0) | 
+            (im:= imaginaryPart l0; if abs(im) > 1e-15 then "+"|toString(im) else "") | 
+        " $ & & $" |
+                toString(realPart l1) |
+                (im:= imaginaryPart l1; if abs(im) > 1e-15 then "+"|toString(im) else "") | 
+            "$";
+    out
+    )
+makeWitnessTable = method()
+makeWitnessTable PointArray := PA -> (
+    pointList := apply(points PA, p -> flatten entries clean_(1e-5) matrix p);
+    n := 2;--length first pointList;
+    cn := concatenate(3:"c");
+    out := "\\begin{tabular}{" | cn | "}";
+    out = out | "$x_i$ & & $y_i$\\\\\\hline";
+    i := 0;
+    for p in pointList do (
+        i = i +1;
+        out = out | stringFloatList p ;
+        if i < length pointList then out = out | "\\\\"
+        );
+    out = out | "\\end{tabular}";
+    out
+    )
+
+
+
+
+
