@@ -38,37 +38,52 @@ Output:
         but still worth looking at in experiments where the runtime doesnt matter
 *-
 
-equalityTest = method(Options=>{NearestWitnessPoint => false, Verbose=>false, SampleAttempts=>20})
+equalityTest = method(Options=>{
+        NearestWitnessPoint => false, 
+        Verbose=>false, 
+        -- todo: these two options are possibly bit redundant. we should fix a convention for "bailing out" (currently we return null)
+        SampleAttempts=>20, -- number of times we try to sample C
+        TestAttempts=>5 -- number of test attempts w/ given sample from C
+        })
 equalityTest (RingElement, WitnessData) := o -> (f, refW) -> (
     C := extractCoeffs f;
     equalityTest(C, refW, o)
     )
 equalityTest (Matrix, WitnessData) := o -> (C, refW) -> (
     H := homotopy refW;
-    sampleResult := timing sampleCurveWParams(C, H,SampleAttempts=>o.SampleAttempts);
-    trackTime := first sampleResult;
-    (testDomPt, fixedParams) := last sampleResult;
-    testCurveSliceParams := transpose sliceParams(point fixedParams, testDomPt, map H, slicePattern H);
-    pRef := fixedParams |  sliceParams refW;
-    pTest := fixedParams | testCurveSliceParams;
-    tracking := timing trackWitness(H, point pTest, point pRef, {testDomPt}, Verbose=>o.Verbose);
-    trackTime = trackTime + first tracking;
-    imgPtRefWit := last tracking;
-    print trackTime;
-    theResult := if (length image imgPtRefWit == 0) then null else (
-    	imgPtRef := first image imgPtRefWit;
-	lookingUp := timing if (o.NearestWitnessPoint) then minPosition((points image refW)/(x->norm(matrix x-matrix imgPtRef))) else position(imgPtRef, image refW);
-        << "^^^^ track time " << endl;
-	lookupTime := first lookingUp;
-    	matchedIndex := last lookingUp;
-    	testPositive := not instance(matchedIndex, Nothing);
-    	if testPositive then (
-	    x := (image refW)_matchedIndex;
-	    if o.NearestWitnessPoint then resid := norm(matrix x - matrix imgPtRef);
-	    );
-    	if o.NearestWitnessPoint then resid else testPositive
-    	);
-    testResult(imgPtRefWit, theResult, trackTime, lookupTime)
+    local tr;
+    local result;
+    attemptNum := 0;
+    while (instance(result, Nothing) and attemptNum < o.TestAttempts) do (
+        if o. Verbose then << "attempt number: " << toString(attemptNum) << endl;
+        sampleResult := timing sampleCurveWParams(C, H,SampleAttempts=>o.SampleAttempts);
+        trackTime := first sampleResult;
+        (testDomPt, fixedParams) := last sampleResult;
+        testCurveSliceParams := transpose sliceParams(point fixedParams, testDomPt, map H, slicePattern H);
+        pRef := fixedParams |  sliceParams refW;
+        pTest := fixedParams | testCurveSliceParams;
+        tracking := timing trackWitness(H, point pTest, point pRef, {testDomPt}, Verbose=>o.Verbose);
+        trackTime = trackTime + first tracking;
+        imgPtRefWit := last tracking;
+        print trackTime;
+        theResult := if (length image imgPtRefWit == 0) then null else (
+    	    imgPtRef := first image imgPtRefWit;
+	    lookingUp := timing if (o.NearestWitnessPoint) then minPosition((points image refW)/(x->norm(matrix x-matrix imgPtRef))) else position(imgPtRef, image refW);
+            << "^^^^ track time " << endl;
+	    lookupTime := first lookingUp;
+    	    matchedIndex := last lookingUp;
+    	    testPositive := not instance(matchedIndex, Nothing);
+    	    if testPositive then (
+	        x := (image refW)_matchedIndex;
+	        if o.NearestWitnessPoint then resid := norm(matrix x - matrix imgPtRef);
+	        );
+    	    if o.NearestWitnessPoint then resid else testPositive
+    	    );
+        tr = testResult(imgPtRefWit, theResult, trackTime, lookupTime);
+        result = tr#"Result";
+        attemptNum = attemptNum + 1;
+        );
+    tr
 )
 
 

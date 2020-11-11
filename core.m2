@@ -128,7 +128,7 @@ genericCurve = d -> (
     gateSystem(gateMatrix{coeffs}, vars monMat, gateMatrix{coeffs} * gateMatrix monMat)
     )
 
--- gateSystem whose variables are group elements, parameters are curve coefficients
+-- System whose variables are group elements, parameters are curve coefficients
 -- gives the action of a 3x3 matrix on polynomials of degree d
 coeffR = d -> (
 --    scan({C, g,x,y,z},s->s=symbol s);
@@ -215,12 +215,15 @@ sliceParams (Point, Point, GateSystem, HashTable) := o -> (mapParamPt, domPt, Ma
 
 --3) methods for random sampling
 
--- coefficients of curve after random change of coordinates
+-- coefficients of curve after random change of coordinates (E2 ONLY!!!!)
+-- IN: (FF, f)
+--  FF: (RR, CC) samples E(2, FF)
+--  f: plane curve
+--  d: degree of f
 randCoordChange = method(Options=>{Group=>"E2"})
-randCoordChange (Type, RingElement) := o -> (FF, f) -> randCoordChange(FF, extractCoefficients f, o)
-randCoordChange (Type, Matrix) := o -> (FF, C) -> (
+randCoordChange (Type, RingElement) := o -> (FF, f) -> randCoordChange(FF, first degree f, extractCoeffs f, o)
+randCoordChange (Type, ZZ, Matrix) := o -> (FF, d, C) -> (
     M := randE2 FF;
-    testCurveCoeffPS = coeffR d; -- evaluate this to get new coefficients after coordinate change
     transpose evaluate(
         coeffR d,
     	point sub((C_{0..binomial(d+2,2)-1}|matrix{flatten entries M}),CC)
@@ -232,7 +235,7 @@ randCoordChange (Type, Matrix) := o -> (FF, C) -> (
 sampleCurve = method(Options=>{})
 sampleCurve Thing := o -> C -> sampleCurve(1, C, o)
 sampleCurve (ZZ, RingElement) := o -> (k, f) -> (
-    coeffs := extractCoefficients f;
+    coeffs := extractCoeffs f;
     sampleCurve(k, coeffs, o)
     )
 sampleCurve (ZZ, Matrix) := o -> (k, coeffs) -> (
@@ -465,6 +468,9 @@ homotopy WitnessData := W -> W#"Homotopy"
 sliceParams WitnessData := o -> W -> (parameters W)_{numParameters map homotopy W..numParameters gateSystem homotopy W-1}
 fixedParams = method()
 fixedParams WitnessData :=  W -> (parameters W)_{0..numParameters map homotopy W-1}
+coefParams = method()
+coefParams WitnessData :=  W -> (parameters W)_{0..numParameters map homotopy W-1}
+
 
 pCompose = method()
 pCompose (MutableHashTable, MutableHashTable) := (H1, H2) -> (
@@ -573,7 +579,7 @@ evaluate (GateSystem,Matrix,Matrix) := (F,p,x) -> (
     evaluate(F#"SLP", matrix p | matrix x)
     )
 
---6) articleg
+--6) article
 stringFloatList = l -> (
     n := length l;
     i := 0;
@@ -586,7 +592,7 @@ stringFloatList = l -> (
                                      else "") | 
         " $ & & $" |
                 toString(realPart l1) |
-                (im:= imaginaryPart l1; if im > 1e-15 then "+"|toString(im)|"\\, i" 
+                (im = imaginaryPart l1; if im > 1e-15 then "+"|toString(im)|"\\, i" 
                              else if im < -1e-15 then toString(im)|"\\, i" 
                              else "")  |
             "$";
