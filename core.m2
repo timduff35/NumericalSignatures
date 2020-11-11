@@ -581,10 +581,14 @@ stringFloatList = l -> (
     l1 := last l;
     out := "";
     out = out | "$" | toString(realPart l0) | 
-            (im:= imaginaryPart l0; if abs(im) > 1e-15 then "+"|toString(im) else "") | 
+            (im:= imaginaryPart l0; if (im > 1e-15) then "+"|toString(im)|"\\, i" 
+                                    else if im < -1e-15 then toString(im)|"\\, i" 
+                                     else "") | 
         " $ & & $" |
                 toString(realPart l1) |
-                (im:= imaginaryPart l1; if abs(im) > 1e-15 then "+"|toString(im) else "") | 
+                (im:= imaginaryPart l1; if im > 1e-15 then "+"|toString(im)|"\\, i" 
+                             else if im < -1e-15 then toString(im)|"\\, i" 
+                             else "")  |
             "$";
     out
     )
@@ -604,8 +608,7 @@ makeWitnessTable PointArray := PA -> (
     out = out | "\\end{tabular}";
     out
     )
-
-
+makeWitnessTable WitnessData := W -> makeWitnessTable W#"ImageWitnesses"
 
 
 

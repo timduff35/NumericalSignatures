@@ -6,6 +6,32 @@ dom = domain(3, 1)
 Map = diffEuclideanSigMap dom
 H = witnessHomotopy(dom, Map)
 elapsedTime W = runMonodromy H
+    (fix, slice) := (fixedParams W, sliceParams W);
+    chartInds := (numcols fix -3..numcols fix-1);
+    (coef, chart) := (submatrix'(fix, chartInds), submatrix(fix, chartInds));
+            slicen := slice + matrix{{0_CC, 0_CC, 1}};
+            w' := witnessCollect(coef, W, SliceParameters => slice, ChartParameters => chart);
+            preimage w'
+            )
+        )
+
+
+
+verticalSweep = (W, n) -> (
+    (fix, slice) := (fixedParams W, sliceParams W);
+    chartInds := (numcols fix -3..numcols fix-1);
+    (coef, chart) := (submatrix'(fix, chartInds), submatrix(fix, chartInds));
+    apply(n, i -> (
+            slicen := slice + matrix{{0_CC, 0_CC, i}};
+            w' := witnessCollect(coef, W, SliceParameters => slicen, ChartParameters => chart);
+            preimage w'
+            )
+        )
+    )
+n=3
+netList verticalSweep(W, 3)
+peek W
+
 
 R = QQ[x,y,z]
 f=homogenize(8*x^3 - (20*x)*y + 2*y^2 + 5*x - 10,z)

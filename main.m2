@@ -15,7 +15,7 @@ witnessCollect (Matrix, WitnessData) := o -> (curveCoeffs, refW) -> (
     H := homotopy refW;
     nSlcParams := numParameters gateSystem H - numParameters map H;
     nChartParameters := 4*dim domain H;
-    chartParameters := if instance(o.ChartParameters, Nothing) then random(CC^1, CC^nChartParameters);
+    chartParameters := if instance(o.ChartParameters, Nothing) then random(CC^1, CC^nChartParameters) else o.ChartParameters;
     sliceParameters := if instance(o.SliceParameters, Nothing) then random(CC^1,CC^nSlcParams) else o.SliceParameters;
     curveParameters := curveCoeffs | chartParameters | sliceParameters;
     trackWitness(H, refW, point curveParameters, ImgTol=>o.ImgTol, Verbose=>o.Verbose)
@@ -252,7 +252,7 @@ p := point fixedParams Wf
 netList(
     {{"img","dom"}}|
     sort apply(preimage Wf, x -> {point evaluate(map H, p, x),dehomog x})
-    )
+    
     
 
 options witnessCollect
