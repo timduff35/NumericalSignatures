@@ -14,7 +14,7 @@ totWitTime = 0.0
 witSucs = 0
 curves = for i from 1 to OUTERITERS list (
     C0 := if SPHERE then sphere(binomial(d+2,2), 1);--else random(RR^1,RR^(binomial(d+2,2)));
-    {C0} | for j from 2 to INNERITERS list randCoordChange(RR,C0)
+    {C0} | for j from 2 to INNERITERS list randCoordChange(RR,d,C0)
     );
 witnesses = for i from 0 to OUTERITERS-1 list (
     C0 := curves#i#0;

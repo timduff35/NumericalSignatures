@@ -288,6 +288,23 @@ randE2 = FF -> (
     ref*Rt
     )
 
+-- random Equi-Affine element acting on P^2
+randEqAff = FF -> (
+    a11 := random FF;
+    a12 := random FF;
+    a21 := random FF;
+    a22 := (a12*a21) / a11;
+    a := random FF;
+    b := random FF;
+    Rt := matrix{
+	{a11,a12,a},
+	{a21,a22,b},
+	{0,0,1}
+	};
+    Rt
+    )
+
+
 ---rnorm helper
 gaussCC = () -> (
     (u1,u2):=(random RR,random RR);

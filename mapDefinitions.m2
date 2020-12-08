@@ -74,6 +74,22 @@ jointEuclideanSigMap = dom -> (
     )  
 )
 
+jointEqAffSigMap = dom -> (
+    domGS := gateSystem dom;
+    pts := reshape vars domGS;
+    gateSystem(
+    	parameters domGS,
+    	vars domGS, 
+    	transpose gateMatrix{
+	    apply({{0,1,2},{0,1,3},{0,1,4},{0,1,5},{0,2,3},{0,2,4},{0,2,5}}, S -> (
+		    m := transpose pts^S;
+		    (m_(0,0)/m_(2,0))*((m_(1,1)/m_(2,1)) - (m_(1,2)/m_(2,2))) - (m_(0,1)/m_(2,1))*((m_(1,0)/m_(2,0)) - (m_(1,2)/m_(2,2))) + (m_(0,2)/m_(2,2))*((m_(1,0)/m_(2,0)) - (m_(1,1)/m_(2,1))) 
+		    )
+	    	)
+	    }
+    )  
+)
+
 projectiveJointSigMap = dom -> (
     domGS := gateSystem dom;
     mapVars := vars domGS;
